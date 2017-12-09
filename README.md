@@ -14,6 +14,12 @@ post_install do |installer|
 end
 ```
 
+## SVProgressHUD WARNINGS
+Clic on Pods in the project navigator
+-> clic on SVProgressHUD in the target list
+-->under deployment info/deployment target select 10.0 in the dropdown list
+in this way all the warnings that appear in the build phase will be deleted
+
 ## Finished App
 ![Finished App](https://github.com/londonappbrewery/Images/blob/master/Flash%20Chat.gif)
 
