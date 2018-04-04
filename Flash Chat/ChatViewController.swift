@@ -7,12 +7,12 @@
 //
 
 import UIKit
-
+import Firebase
 
 class ChatViewController: UIViewController {
     
     // Declare instance variables here
-
+    var user : User?
     
     // We've pre-linked the IBOutlets
     @IBOutlet var heightConstraint: NSLayoutConstraint!
@@ -24,6 +24,7 @@ class ChatViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Loaded with user \(Auth.auth().currentUser!.email!)")
         
         //TODO: Set yourself as the delegate and datasource here:
         
@@ -105,12 +106,15 @@ class ChatViewController: UIViewController {
     
     
     @IBAction func logOutPressed(_ sender: AnyObject) {
-        
-        //TODO: Log out the user and send them back to WelcomeViewController
-        
-        
+        signOut()
+        performSegue(withIdentifier: "goToWelcome", sender: self)
     }
     
-
-
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let err as NSError {
+            print(err)
+        }
+    }
 }
