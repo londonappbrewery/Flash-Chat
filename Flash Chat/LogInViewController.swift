@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import SVProgressHUD
 
 
 class LogInViewController: UIViewController {
@@ -21,7 +22,10 @@ class LogInViewController: UIViewController {
             signOut()
             emailTextfield.text = currentUser.email!
             passwordTextfield.becomeFirstResponder()
+        } else {
+            emailTextfield.becomeFirstResponder()
         }
+        passwordTextfield.text = ""
     }
 
     override func didReceiveMemoryWarning() {
@@ -30,29 +34,30 @@ class LogInViewController: UIViewController {
 
    
     @IBAction func logInPressed(_ sender: AnyObject) {
+        SVProgressHUD.setDefaultMaskType(.gradient)
+        SVProgressHUD.show()
         Auth.auth().signIn(withEmail: emailTextfield.text!, password: passwordTextfield.text!) { (user, err) in
             if err != nil {
+                SVProgressHUD.dismiss()
                 let alert = UIAlertController(title: "Error", message: err?.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
-                self.retryLogin()
             } else if !user!.isEmailVerified {
+                SVProgressHUD.dismiss()
                 let alert = UIAlertController(title: "Email Address Not Verified",
                                               message: "Please check your email and verify your email address before logging in.",
                                               preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 // TODO: Add option to resend verification
                 self.present(alert, animated: true, completion: nil)
-                self.retryLogin()
             } else {
+                SVProgressHUD.showSuccess(withStatus: "Success!")
+                SVProgressHUD.dismiss(withDelay: 0.5)
                 self.performSegue(withIdentifier: "goToChat", sender: self)
             }
+            self.passwordTextfield.text = ""
+            self.passwordTextfield.becomeFirstResponder()
         }
-    }
-    
-    func retryLogin() {
-        self.passwordTextfield.text = ""
-        self.passwordTextfield.becomeFirstResponder()
     }
     
     func signOut() {

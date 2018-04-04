@@ -7,7 +7,7 @@
 
 import UIKit
 import Firebase
-
+import SVProgressHUD
 
 class RegisterViewController: UIViewController {
 
@@ -16,20 +16,21 @@ class RegisterViewController: UIViewController {
     @IBOutlet var emailTextfield: UITextField!
     @IBOutlet var passwordTextfield: UITextField!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        emailTextfield.becomeFirstResponder()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-
   
     @IBAction func registerPressed(_ sender: AnyObject) {
+        SVProgressHUD.setDefaultMaskType(.gradient)
+        SVProgressHUD.show()
         Auth.auth().createUser(withEmail: emailTextfield.text!, password: passwordTextfield.text!) { (user, err) in
             if err != nil {
+                SVProgressHUD.dismiss()
                 print(err!)
                 let alert = UIAlertController(title: "Error", message: err?.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
@@ -38,6 +39,7 @@ class RegisterViewController: UIViewController {
                 if let user : User = Auth.auth().currentUser {
                     print("Registration of user \(user.email!) successful, sending email verification")
                     user.sendEmailVerification(completion: { (err) in
+                        SVProgressHUD.dismiss()
                         if err != nil {
                             print(err!)
                             let alert = UIAlertController(title: "Error", message: err?.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
@@ -53,6 +55,8 @@ class RegisterViewController: UIViewController {
                             self.present(alert, animated: true, completion: nil)
                         }
                     })
+                } else {
+                    SVProgressHUD.dismiss()
                 }
             }
         }

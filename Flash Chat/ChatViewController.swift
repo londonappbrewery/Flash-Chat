@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 
-
 class ChatViewController: UIViewController {
     
     // Declare instance variables here
@@ -107,12 +106,15 @@ class ChatViewController: UIViewController {
     
     
     @IBAction func logOutPressed(_ sender: AnyObject) {
-        
-        //TODO: Log out the user and send them back to WelcomeViewController
-        
-        
+        signOut()
+        performSegue(withIdentifier: "goToWelcome", sender: self)
     }
     
-
-
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let err as NSError {
+            print(err)
+        }
+    }
 }
